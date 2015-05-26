@@ -1,0 +1,56 @@
+module.exports = {
+  // port to listen on
+  port: <%= node["doorman"]["listen_port"] %>,
+
+  <% if node["doorman"]["hostname"] %>
+  // URL for OAuth callbacks, default autodetect
+  hostname: '<%= node["doorman"]["hostname"] %>',
+  <% end %>
+  
+  proxyTo: {
+    host: 'localhost',
+    port: <%= node["doorman"]["proxy_to_port"] %>
+  },
+
+  // Session cookie options, see: https://github.com/expressjs/cookie-session
+  sessionCookie: {
+    name: '__doorman',
+    maxage: <%= node["doorman"]["session_maxage"] %>, // milliseconds until expiration (or "false" to not expire)
+    secret: '<%= node["doorman"]["session_secret"] %>' // change me
+  },
+
+  <% if node["doorman"]["use_ssl"] %>
+  // Secure port for HTTPS connections. SSL certificate options MUST be set when enabled.
+  securePort: <%= node["doorman"]["secure_port"] %>,
+
+  // Force Transport Layer Security (TLS). Secure port and SSL certificates must be set.
+  forceTLS: true,
+
+  // SSL certificates are required when securePort is set
+  ssl: {
+    keyFile: '<%= node["doorman"]["keyfile_path"] %>',
+    certFile: '<%= node["doorman"]["certfile_path"] %>'<% if node["doorman"]["cafile_path"] %>,
+    caFile: '<%= node["doorman"]["cafile_path"] %>' // OPTIONAL: Intermediate CA certificate
+    <% end %>
+  },
+
+  <% end %>
+  <% if node["doorman"]["bypass_paths"] %>
+  // Paths that bypass doorman and do not need any authentication.  Matches on the
+  // beginning of paths; for example '/about' matches '/about/me'.  Regexes are also supported.
+  publicPaths: [
+    <% node["doorman"]["bypass_paths"].each do |path| %>
+    
+    <% end %>
+  <% end %>
+
+  modules: {
+    <% i = 1 %>
+    <% node["doorman"]["modules"].each do |name,module_content| %>
+    <% i = i + 1 %>
+    <%= name %>: {
+      <%= module_content %>
+    }<%= "," unless i == node["doorman"]["modules"].size %>
+    <% end %>
+  }
+};
