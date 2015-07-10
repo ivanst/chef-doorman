@@ -13,5 +13,5 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[chef-doorman::default]
+      - recipe[doorman::default]
     attributes:
