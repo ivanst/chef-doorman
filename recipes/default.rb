@@ -9,6 +9,7 @@ package "git"
 user "doorman" do
   action :create
   shell "/bin/false"
+  manage_home true
 end
 
 git "/home/doorman/doorman" do
