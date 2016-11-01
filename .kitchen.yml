@@ -9,9 +9,12 @@ provisioner:
 
 platforms:
   - name: centos-7.0
+  - name: centos-7.2
+
+verifier:
+  name: inspec
 
 suites:
   - name: default
     run_list:
       - recipe[doorman::default]
-    attributes:
